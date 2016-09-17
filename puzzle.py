@@ -21,7 +21,9 @@ class Puzzle:
     def is_solved(self):
         return self.blocks[self.objective[0]][0] == self.objective[1]
 
-    def get_moves(self, block):
+    def get_moves(self, block, visited = None):
+        if visited is None: visited = [repr(self)]
+
         directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
         result = []
 
@@ -43,17 +45,20 @@ class Puzzle:
                 newblocks = self.blocks[:]
                 newblocks[block] = ((x + dx, y + dy), (width, height))
                 p = Puzzle(self.width, self.height, newblocks, self.objective)
+                representation = repr(p)
 
-                result.append(p)
+                if representation not in visited:
+                    result.append(p)
+                    visited.append(representation)
+                    result.extend(p.get_moves(block, visited))
 
         return result
 
     def get_all_moves(self):
-        result = self.get_moves(self.objective[0])
+        result = []
 
         for block in range(len(self.blocks)):
-            if block != self.objective[0]:
-                result.extend(self.get_moves(block))
+            result.extend(self.get_moves(block))
 
         return result
 
@@ -64,9 +69,14 @@ class Puzzle:
         def get_solution(puzzle, visited):
             result = [puzzle]
 
-            while visited[repr(puzzle)] is not None:
-                puzzle = visited[repr(puzzle)]
-                result.insert(0, puzzle)
+            while True:
+                representation = repr(puzzle)
+                puzzle = visited[representation]
+
+                if puzzle is not None:
+                    result.insert(0, puzzle)
+                else:
+                    break
 
             return result
 
@@ -77,10 +87,12 @@ class Puzzle:
                 return get_solution(puzzle, visited)
 
             for p in puzzle.get_all_moves():
-                if repr(p) in visited:
+                representation = repr(p)
+
+                if representation in visited:
                     continue
 
-                visited[repr(p)] = puzzle
+                visited[representation] = puzzle
                 queue.insert(0, p)
 
         return None
@@ -136,11 +148,9 @@ class Puzzle:
                     pic = pic[:index] + '|' + pic[index + 1:]
 
                     if j != height - 1:
-                        index += self.width * 3 + 1
-                        pic = pic[:index] + '|' + pic[index + 1:]
-
-                        index += self.width * 3 + 1
-                        pic = pic[:index] + '|' + pic[index + 1:]
+                        for _ in range(2):
+                            index += self.width * 3 + 1
+                            pic = pic[:index] + '|' + pic[index + 1:]
 
             return pic
 
@@ -167,7 +177,7 @@ p = Puzzle(4, 5, [
 
 solution = p.solve()
 
-print(len(solution))
+print('Moves: ' + str(len(solution) - 1))
 
 for q in solution:
     print(q)
