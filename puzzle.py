@@ -16,7 +16,7 @@ class Puzzle:
         return not self.is_blocked(x, y)
 
     def is_solved(self):
-        return self.objective[0] == self.objective[1]
+        return self.blocks[self.objective[0]][0] == self.objective[1]
 
     def __repr__(self):
         result = ('   ' * self.width + '\n' + ' _ ' * self.width + '\n' + '   ' * self.width + '\n') * self.height
@@ -94,7 +94,7 @@ p = Puzzle(4, 5, [
     ((3, 5), (1, 1)),
     ((4, 5), (1, 1)),
     ((1, 4), (1, 2))
-], ((1, 1), (2, 4)))
+], (0, (2, 4)))
 
 print(p)
 print(p.is_blocked(2, 4))
