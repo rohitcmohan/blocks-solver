@@ -28,6 +28,8 @@ class Puzzle:
         result = []
 
         for dx, dy in directions:
+            # Check if block can be moved in this direction
+
             ((x, y), (width, height)) = self.blocks[block]
             blocked = False
 
@@ -50,6 +52,8 @@ class Puzzle:
                 if representation not in visited:
                     result.append(p)
                     visited.append(representation)
+
+                    # Get more moves with this block
                     result.extend(p.get_moves(block, visited))
 
         return result
@@ -63,10 +67,7 @@ class Puzzle:
         return result
 
     def solve(self):
-        queue = [self]
-        visited = {repr(self): None}
-
-        def get_solution(puzzle, visited):
+        def get_path(puzzle, visited):
             result = [puzzle]
 
             while True:
@@ -80,11 +81,16 @@ class Puzzle:
 
             return result
 
+        # Use breadth-first-search to look for the solution
+
+        queue = [self]
+        visited = {repr(self): None}
+
         while len(queue) >= 1:
             puzzle = queue.pop()
 
             if puzzle.is_solved():
-                return get_solution(puzzle, visited)
+                return get_path(puzzle, visited)
 
             for p in puzzle.get_all_moves():
                 representation = repr(p)
