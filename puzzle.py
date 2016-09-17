@@ -57,21 +57,38 @@ class Puzzle:
 
         return result
 
-    def solve(self, visited = []):
-        if self.is_solved():
-            return [self]
+    def solve(self):
+        def estimate(puzzle):
+            (block, (x1, y1)) = puzzle.objective
+            (x0, y0) = puzzle.blocks[block][0]
 
-        moves = self.get_all_moves()
-        visited.append(repr(self))
+            return (x1 - x0) ** 2 + (y1 - y0) ** 2
 
-        for p in moves:
-            if repr(p) in visited: continue
+        queue = [(self, estimate(self))]
+        visited = {repr(self): None}
 
-            solution = p.solve(visited)
-            if solution is None: continue
+        def get_solution(puzzle, visited):
+            result = [puzzle]
 
-            solution.insert(0, self)
-            return solution
+            while visited[repr(puzzle)] is not None:
+                puzzle = visited[repr(puzzle)]
+                result.insert(0, puzzle)
+
+            return result
+
+        while len(queue) >= 1:
+            (k, _) = min(enumerate(queue), key=lambda p: p[1][1])
+            (puzzle, estimation) = queue.pop(k)
+
+            if puzzle.is_solved():
+                return get_solution(puzzle, visited)
+
+            for p in puzzle.get_all_moves():
+                if repr(p) in visited:
+                    continue
+
+                visited[repr(p)] = puzzle
+                queue.insert(0, (p, estimate(p)))
 
         return None
 
@@ -154,6 +171,8 @@ p = Puzzle(4, 5, [
 
 solution = p.solve()
 
+print(len(solution))
+
 for q in solution:
     print(q)
-    raw_input()
+    input()
