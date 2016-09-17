@@ -1,14 +1,15 @@
 class Puzzle:
     def __init__(self, width, height, blocks, objective):
+        self.labels = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         self.width = width
         self.height = height
         self.blocks = blocks
         self.objective = objective
 
     def is_blocked(self, x, y):
-        for (x0, y0), (width, height) in self.blocks:
+        for k, ((x0, y0), (width, height)) in enumerate(self.blocks):
             if x0 <= x <= x0 + width - 1 and y0 <= y <= y0 + height - 1:
-                return (x0, y0)
+                return k
 
         return None
 
@@ -20,7 +21,6 @@ class Puzzle:
 
     def __repr__(self):
         result = ('   ' * self.width + '\n' + ' _ ' * self.width + '\n' + '   ' * self.width + '\n') * self.height
-        brushes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         i = 0
 
         def pos2index(x, y):
@@ -78,7 +78,7 @@ class Puzzle:
             return pic
 
         for position, size in self.blocks:
-            result = draw_block(result, position, size, brushes[i])
+            result = draw_block(result, position, size, self.labels[i])
             i += 1
 
         return result
