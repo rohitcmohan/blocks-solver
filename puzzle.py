@@ -49,10 +49,11 @@ class Puzzle:
         return result
 
     def get_all_moves(self):
-        result = []
+        result = self.get_moves(self.objective[0])
 
         for block in range(len(self.blocks)):
-            result.extend(self.get_moves(block))
+            if block != self.objective[0]:
+                result.extend(self.get_moves(block))
 
         return result
 
@@ -143,8 +144,11 @@ class Puzzle:
 
             return pic
 
-        for position, size in self.blocks:
-            result = draw_block(result, position, size)
+        for k, (position, size) in enumerate(self.blocks):
+            brush = ' '
+            if k == self.objective[0]: brush = 'X'
+
+            result = draw_block(result, position, size, brush)
 
         return result
 
