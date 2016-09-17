@@ -58,13 +58,7 @@ class Puzzle:
         return result
 
     def solve(self):
-        def estimate(puzzle):
-            (block, (x1, y1)) = puzzle.objective
-            (x0, y0) = puzzle.blocks[block][0]
-
-            return (x1 - x0) ** 2 + (y1 - y0) ** 2
-
-        queue = [(self, estimate(self))]
+        queue = [self]
         visited = {repr(self): None}
 
         def get_solution(puzzle, visited):
@@ -77,8 +71,7 @@ class Puzzle:
             return result
 
         while len(queue) >= 1:
-            (k, _) = min(enumerate(queue), key=lambda p: p[1][1])
-            (puzzle, estimation) = queue.pop(k)
+            puzzle = queue.pop()
 
             if puzzle.is_solved():
                 return get_solution(puzzle, visited)
@@ -88,13 +81,12 @@ class Puzzle:
                     continue
 
                 visited[repr(p)] = puzzle
-                queue.insert(0, (p, estimate(p)))
+                queue.insert(0, p)
 
         return None
 
     def __repr__(self):
         result = ('   ' * self.width + '\n' + ' _ ' * self.width + '\n' + '   ' * self.width + '\n') * self.height
-        i = 0
 
         def pos2index(x, y):
             width = self.width * 9 + 3
@@ -151,8 +143,7 @@ class Puzzle:
             return pic
 
         for position, size in self.blocks:
-            result = draw_block(result, position, size, self.labels[i])
-            i += 1
+            result = draw_block(result, position, size)
 
         return result
 
