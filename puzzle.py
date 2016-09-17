@@ -5,6 +5,19 @@ class Puzzle:
         self.blocks = blocks
         self.objective = objective
 
+    def is_blocked(self, x, y):
+        for (x0, y0), (width, height) in self.blocks:
+            if x0 <= x <= x0 + width - 1 and y0 <= y <= y0 + height - 1:
+                return (x0, y0)
+
+        return None
+
+    def is_free(self, x, y):
+        return not self.is_blocked(x, y)
+
+    def is_solved(self):
+        return self.objective[0] == self.objective[1]
+
     def __repr__(self):
         result = ('   ' * self.width + '\n' + ' _ ' * self.width + '\n' + '   ' * self.width + '\n') * self.height
         brushes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -64,23 +77,26 @@ class Puzzle:
 
             return pic
 
-        for position, size in self.blocks.items():
+        for position, size in self.blocks:
             result = draw_block(result, position, size, brushes[i])
             i += 1
 
         return result
 
-p = Puzzle(4, 5, {
-    (1, 1): (2, 2),
-    (3, 1): (2, 1),
-    (3, 2): (2, 1),
-    (1, 3): (2, 1),
-    (3, 4): (2, 1),
-    (3, 3): (1, 1),
-    (4, 3): (1, 1),
-    (3, 5): (1, 1),
-    (4, 5): (1, 1),
-    (1, 4): (1, 2)
-}, (1, 1, 2, 4))
+p = Puzzle(4, 5, [
+    ((1, 1), (2, 2)),
+    ((3, 1), (2, 1)),
+    ((3, 2), (2, 1)),
+    ((1, 3), (2, 1)),
+    ((3, 4), (2, 1)),
+    ((3, 3), (1, 1)),
+    ((4, 3), (1, 1)),
+    ((3, 5), (1, 1)),
+    ((4, 5), (1, 1)),
+    ((1, 4), (1, 2))
+], ((1, 1), (2, 4)))
 
 print(p)
+print(p.is_blocked(2, 4))
+print(p.is_blocked(3, 4))
+print(p.is_solved())
