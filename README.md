@@ -1,6 +1,6 @@
 # blocks-solver
 
-Solves these sliding blocks puzzles.
+Solves these [sliding block puzzles](https://en.wikipedia.org/wiki/Klotski). 
 
 ~~~
                                                      +-++----++-+
