@@ -1,6 +1,5 @@
 class Puzzle:
     def __init__(self, width, height, blocks, objective):
-        self.labels = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         self.width = width
         self.height = height
         self.blocks = blocks
@@ -113,14 +112,16 @@ class Puzzle:
                     else:
                         index += self.width * 3 + 1
 
+                    line = '---'
+
                     if 0 == width - 1:
-                        pic = pic[:index - 1] + '+-+' + pic[index + 2:]
+                        line = '+-+'
                     elif i == 0:
-                        pic = pic[:index - 1] + '+--' + pic[index + 2:]
+                        line = '+--'
                     elif i == width - 1:
-                        pic = pic[:index - 1] + '--+' + pic[index + 2:]
-                    else:
-                        pic = pic[:index - 1] + '---' + pic[index + 2:]
+                        line = '--+'
+
+                    pic = pic[:index - 1] + line + pic[index + 2:]
 
             for j in range(height):
                 for k, i in enumerate([0, width - 1]):
