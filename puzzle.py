@@ -168,6 +168,12 @@ class Puzzle:
 
         return result
 
+# Add blocks in this form:
+#   (position, size)
+#
+# Objective is given in:
+#   (block_index, final_position)
+
 p = Puzzle(4, 5, [
     ((2, 1), (2, 2)),
     ((1, 1), (1, 2)),
