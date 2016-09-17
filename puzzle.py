@@ -6,6 +6,9 @@ class Puzzle:
         self.blocks = blocks
         self.objective = objective
 
+    def has_point(self, x, y):
+        return 1 <= x <= self.width and 1 <= y <= self.height
+
     def is_blocked(self, x, y):
         for k, ((x0, y0), (width, height)) in enumerate(self.blocks):
             if x0 <= x <= x0 + width - 1 and y0 <= y <= y0 + height - 1:
@@ -18,6 +21,33 @@ class Puzzle:
 
     def is_solved(self):
         return self.blocks[self.objective[0]][0] == self.objective[1]
+
+    def get_moves(self, block):
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        result = []
+
+        for dx, dy in directions:
+            ((x, y), (width, height)) = self.blocks[block]
+            blocked = False
+
+            for i in range(width):
+                if blocked: continue
+
+                for j in range(height):
+                    pt = (x + dx + i, y + dy + j)
+
+                    if not self.has_point(*pt) or self.is_blocked(*pt) not in [None, block]:
+                        blocked = True
+                        continue
+
+            if not blocked:
+                newblocks = self.blocks[:]
+                newblocks[block] = ((x + dx, y + dy), (width, height))
+                p = Puzzle(self.width, self.height, newblocks, self.objective)
+
+                result.append(p)
+
+        return result
 
     def __repr__(self):
         result = ('   ' * self.width + '\n' + ' _ ' * self.width + '\n' + '   ' * self.width + '\n') * self.height
@@ -100,3 +130,6 @@ print(p)
 print(p.is_blocked(2, 4))
 print(p.is_blocked(3, 4))
 print(p.is_solved())
+
+for q in p.get_moves(4):
+    print(q)
