@@ -49,6 +49,14 @@ class Puzzle:
 
         return result
 
+    def get_all_moves(self):
+        result = []
+
+        for block in range(len(self.blocks)):
+            result.extend(self.get_moves(block))
+
+        return result
+
     def __repr__(self):
         result = ('   ' * self.width + '\n' + ' _ ' * self.width + '\n' + '   ' * self.width + '\n') * self.height
         i = 0
@@ -131,5 +139,5 @@ print(p.is_blocked(2, 4))
 print(p.is_blocked(3, 4))
 print(p.is_solved())
 
-for q in p.get_moves(4):
+for q in p.get_all_moves():
     print(q)
