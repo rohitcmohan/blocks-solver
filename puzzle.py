@@ -57,6 +57,24 @@ class Puzzle:
 
         return result
 
+    def solve(self, visited = []):
+        if self.is_solved():
+            return [self]
+
+        moves = self.get_all_moves()
+        visited.append(repr(self))
+
+        for p in moves:
+            if repr(p) in visited: continue
+
+            solution = p.solve(visited)
+            if solution is None: continue
+
+            solution.insert(0, self)
+            return solution
+
+        return None
+
     def __repr__(self):
         result = ('   ' * self.width + '\n' + ' _ ' * self.width + '\n' + '   ' * self.width + '\n') * self.height
         i = 0
@@ -134,10 +152,8 @@ p = Puzzle(4, 5, [
     ((1, 4), (1, 2))
 ], (0, (2, 4)))
 
-print(p)
-print(p.is_blocked(2, 4))
-print(p.is_blocked(3, 4))
-print(p.is_solved())
+solution = p.solve()
 
-for q in p.get_all_moves():
+for q in solution:
     print(q)
+    raw_input()
